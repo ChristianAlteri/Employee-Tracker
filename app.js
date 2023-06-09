@@ -4,14 +4,14 @@ const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
 const { viewAllEmployees, viewAllRoles, viewAllDepartments, addEmployee } = require("./helper.js");
 const db = require("./connect.js");
-const readline = require("readline");
+// const readline = require("readline");
 
 // Create a readline interface and use it to remove all listeners before making a recursive call to start()
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-rl.setMaxListeners(Infinity);
+// const rl = readline.createInterface({
+//   input: process.stdin,
+//   output: process.stdout,
+// });
+// rl.setMaxListeners(Infinity);
 
 // Render title
 ASCII = () => {
@@ -69,50 +69,50 @@ async function start() {
   switch (main) {
     case "View all Employees":
       viewAllEmployees();
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add Employee":
       addEmployee()
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Update Employee Role":
       // TODO
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "View all Roles":
       viewAllRoles();
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add Role":
       // TODO
       console.log("Logic for Add Role selected.");
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "View all Departments":
       viewAllDepartments();
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add departments":
       // TODO
       console.log("Logic for 'Add departments' selected.");
-      rl.removeAllListeners("keypress");
+      // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Quit":
-      rl.close();
+      // rl.close();
       break;
   }
 
