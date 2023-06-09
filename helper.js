@@ -36,12 +36,33 @@ const viewAllEmployees = () => {
       return;
     } else {
       console.table(results);
-      
+    }
+  })
+};
+const viewAllRoles = () => {
+  const sql = `SELECT * FROM roles`
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    } else {
+      console.table(results);
+    }
+  })
+};
+const viewAllDepartments = () => {
+  const sql = `SELECT * FROM departments`
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.log(err.message);
+      return;
+    } else {
+      console.table(results);
     }
   })
 };
 
 module.exports = {
   viewAllEmployees,
-  updateEmployee,
+  updateEmployee, viewAllRoles, viewAllDepartments,
 };

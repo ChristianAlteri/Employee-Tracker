@@ -2,7 +2,7 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
-const { viewAllEmployees, updateEmployee } = require("./helper.js");
+const { viewAllEmployees, updateEmployee, viewAllRoles, viewAllDepartments } = require("./helper.js");
 const db = require("./connect.js");
 
 // Render title
@@ -60,34 +60,40 @@ async function start() {
   switch (main) {
     case "View all Employees":
       viewAllEmployees();
-      break;
+      start();
+      console.log("\n Press any key to continue");
 
     case "Add Employee":
       console.log("Logic for  Add Employee selected.");
-      break;
+      start();
+      console.log("\n Press any key to continue");
 
     case "Update Employee Role":
       updateEmployee();
-      break;
+      start();
+      console.log("\n Press any key to continue");
 
     case "View all Roles":
-      console.log("Logic for View all Roles selected.");
-      break;
+      viewAllRoles();
+      start();
+      console.log("\n Press any key to continue");
 
     case "Add Role":
       console.log("Logic for Add Role selected.");
-      break;
+      start();
+      console.log("\n Press any key to continue");
 
     case "View all Departments":
-      console.log("Logic for 'View all Departments' selected.");
-      break;
+      viewAllDepartments();
+      start();
+      console.log("\n Press any key to continue");
 
     case "Add departments":
       console.log("Logic for 'Add departments' selected.");
-      break;
+      start();
+      console.log("\n Press any key to continue");
 
     case "Quit":
-      console.log("Logic for 'Quit' selected.");
       break;
   }
 
