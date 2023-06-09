@@ -47,7 +47,7 @@ ASCII = () => {
   
 async function start() {
   
-  ASCII();
+  
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -72,45 +72,45 @@ async function start() {
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "Add Employee":
       addEmployee()
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "Update Employee Role":
       // TODO
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "View all Roles":
       viewAllRoles();
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "Add Role":
       // TODO
       console.log("Logic for Add Role selected.");
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "View all Departments":
       viewAllDepartments();
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "Add departments":
       // TODO
       console.log("Logic for 'Add departments' selected.");
       // rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
-
+      break;
     case "Quit":
       // rl.close();
       break;
@@ -119,7 +119,7 @@ async function start() {
   // You can access the selected option as 'main' variable here
   // Perform further actions based on the selected option
 }
-
+ASCII();
 start();
 
 
