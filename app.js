@@ -38,7 +38,7 @@ ASCII = () => {
 
 async function start() {
   ASCII();
-  db.helperConnection();
+  // db.helperConnection();
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -129,3 +129,5 @@ async function start() {
 // }
 
 start();
+
+
