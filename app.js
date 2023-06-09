@@ -2,8 +2,16 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
-const { viewAllEmployees, updateEmployee, viewAllRoles, viewAllDepartments, addEmployee } = require("./helper.js");
+const { viewAllEmployees, viewAllRoles, viewAllDepartments, addEmployee } = require("./helper.js");
 const db = require("./connect.js");
+const readline = require("readline");
+
+// Create a readline interface and use it to remove all listeners before making a recursive call to start()
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+rl.setMaxListeners(Infinity);
 
 // Render title
 ASCII = () => {
@@ -33,12 +41,13 @@ ASCII = () => {
   );
   console.log(
     "......................................................................................."
-  );
-};
-
+    );
+  };
+  
+  
 async function start() {
+  
   ASCII();
-  // db.helperConnection();
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -60,82 +69,56 @@ async function start() {
   switch (main) {
     case "View all Employees":
       viewAllEmployees();
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add Employee":
       addEmployee()
-      // start();
-      // console.log("\n Press any key to continue");
+      rl.removeAllListeners("keypress");
+      start();
+      console.log("\n Press any key to continue");
 
     case "Update Employee Role":
       // TODO
-      updateEmployee();
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "View all Roles":
       viewAllRoles();
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add Role":
       // TODO
       console.log("Logic for Add Role selected.");
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "View all Departments":
       viewAllDepartments();
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Add departments":
       // TODO
       console.log("Logic for 'Add departments' selected.");
+      rl.removeAllListeners("keypress");
       start();
       console.log("\n Press any key to continue");
 
     case "Quit":
+      rl.close();
       break;
   }
 
   // You can access the selected option as 'main' variable here
   // Perform further actions based on the selected option
 }
-
-
-// Store the data in response
-//   if (response.confirm === "y") {
-//     // De structure response
-//     const { company, shape, color, textColor } = response;
-// Store correct SVG data in logo by running toHTML()
-// let logo;
-// // Conditional checking what shape the user selected
-// if (shape === "triangle") {
-//   const triangle = new Triangle(company, color, textColor);
-//   logo = triangle.toHTML();
-// } else if (shape === "circle") {
-//   const circle = new Circle(company, color, textColor);
-//   logo = circle.toHTML();
-// } else if (shape === "square") {
-//   const square = new Square(company, color, textColor);
-//   logo = square.toHTML();
-//   }
-//   // display the tables to the console using console.table
-//   console.table([
-//     {
-//       name: 'foo',
-//       age: 10
-//     }, {
-//       name: 'bar',
-//       age: 20
-//     }
-//   ]);
-// } else {
-//   console.log("Let's try that again");
-//   start();
-// }
 
 start();
 
