@@ -2,7 +2,8 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
-const helper = require("./helper.js");
+const { viewAllEmployees, updateEmployee } = require("./helper.js");
+const db = require("./connect.js");
 
 // Render title
 ASCII = () => {
@@ -37,7 +38,7 @@ ASCII = () => {
 
 async function start() {
   ASCII();
-  // helperConnection();
+  db.helperConnection();
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -58,7 +59,7 @@ async function start() {
 
   switch (main) {
     case "View all Employees":
-      helper.viewAllEmployees();
+      viewAllEmployees();
       break;
 
     case "Add Employee":
@@ -66,7 +67,7 @@ async function start() {
       break;
 
     case "Update Employee Role":
-      // helper.updateEmployee();
+      updateEmployee();
       break;
 
     case "View all Roles":
