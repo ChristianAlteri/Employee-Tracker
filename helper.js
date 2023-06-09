@@ -1,6 +1,5 @@
 const inquirer = require("inquirer");
 const db = require("./connect.js");
-const { start } = require("repl");
 require("console.table");
 
 // All helper functions to interact with SQL data
