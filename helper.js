@@ -62,7 +62,58 @@ const viewAllDepartments = () => {
   })
 };
 
+const addEmployee = () => {
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type the 'first' name of the 'new' employee",
+        name: "firstName",
+      },
+      {
+        type: "input",
+        message: "Type the 'last' name of the 'new' employee",
+        name: "lastName",
+      },
+      {
+        type: "input",
+        message: "Type the 'role' for the 'new' employee",
+        name: "roleTitle",
+      },
+      {
+        type: "list",
+        message: "Select the 'department' for the 'new' employee",
+        name: "department",
+        choices: ["Sales", "Engineering", "Finance", "Legal"],
+      },
+      {
+        type: "input",
+        message: "Type the 'salary' for the 'new' employee",
+        name: "salary",
+      },
+      {
+        type: "list",
+        message: "Select the 'manager' for the 'new' employee",
+        name: "manager",
+        choices: ["John Doe", "Ash Rod", "Kun Singh", "Sarah Lourd", "No manager"],
+      },
+    ])
+    .then(({ firstName, lastName, roleTitle, department, salary, manager }) => {
+      const sql = `INSERT INTO employees (first_name, last_name, title, department, salary, manager) VALUES (?, ?, ?, ?, ?, ?)`;
+      const values = [firstName, lastName, roleTitle, department, salary, manager];
+
+      db.query(sql, values, (err, result) => {
+        if (err) {
+        console.log(err.message);
+        return;
+      } else {
+        console.table(results);
+      }
+        // Perform logic to update the employee role
+      });
+})
+}
 module.exports = {
   viewAllEmployees,
-  updateEmployee, viewAllRoles, viewAllDepartments,
+  updateEmployee, viewAllRoles, viewAllDepartments, addEmployee,
 };

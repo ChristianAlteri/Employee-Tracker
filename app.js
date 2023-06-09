@@ -2,7 +2,7 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
-const { viewAllEmployees, updateEmployee, viewAllRoles, viewAllDepartments } = require("./helper.js");
+const { viewAllEmployees, updateEmployee, viewAllRoles, viewAllDepartments, addEmployee } = require("./helper.js");
 const db = require("./connect.js");
 
 // Render title
@@ -64,11 +64,12 @@ async function start() {
       console.log("\n Press any key to continue");
 
     case "Add Employee":
-      console.log("Logic for  Add Employee selected.");
-      start();
-      console.log("\n Press any key to continue");
+      addEmployee()
+      // start();
+      // console.log("\n Press any key to continue");
 
     case "Update Employee Role":
+      // TODO
       updateEmployee();
       start();
       console.log("\n Press any key to continue");
@@ -79,6 +80,7 @@ async function start() {
       console.log("\n Press any key to continue");
 
     case "Add Role":
+      // TODO
       console.log("Logic for Add Role selected.");
       start();
       console.log("\n Press any key to continue");
@@ -89,6 +91,7 @@ async function start() {
       console.log("\n Press any key to continue");
 
     case "Add departments":
+      // TODO
       console.log("Logic for 'Add departments' selected.");
       start();
       console.log("\n Press any key to continue");
