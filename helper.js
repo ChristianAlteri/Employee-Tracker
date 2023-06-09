@@ -102,7 +102,7 @@ const addEmployee = () => {
       const sql = `INSERT INTO employees (first_name, last_name, title, department, salary, manager) VALUES (?, ?, ?, ?, ?, ?)`;
       const values = [firstName, lastName, roleTitle, department, salary, manager];
 
-      db.query(sql, values, (err, result) => {
+      db.query(sql, values, (err, results) => {
         if (err) {
         console.log(err.message);
         return;
