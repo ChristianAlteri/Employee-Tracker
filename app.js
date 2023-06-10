@@ -2,7 +2,12 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
-const { viewAllEmployees, viewAllRoles, viewAllDepartments, addEmployee } = require("./helper.js");
+const {
+  viewAllEmployees,
+  viewAllRoles,
+  viewAllDepartments,
+  addEmployee,
+} = require("./helper.js");
 const db = require("./connect.js");
 // const readline = require("readline");
 
@@ -41,13 +46,10 @@ ASCII = () => {
   );
   console.log(
     "......................................................................................."
-    );
-  };
-  
-  
+  );
+};
+
 async function start() {
-  
-  
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -68,16 +70,20 @@ async function start() {
 
   switch (main) {
     case "View all Employees":
-      viewAllEmployees();
-      // rl.removeAllListeners("keypress");
-      start();
-      console.log("\n Press any key to continue");
+      viewAllEmployees()
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
+
     case "Add Employee":
-      addEmployee()
-      // rl.removeAllListeners("keypress");
-      start();
-      console.log("\n Press any key to continue");
+      addEmployee().then(() => {
+        console.log("\n Press any key to continue");
+        start();
+      });
       break;
     case "Update Employee Role":
       // TODO
@@ -121,5 +127,3 @@ async function start() {
 }
 ASCII();
 start();
-
-

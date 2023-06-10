@@ -3,14 +3,16 @@ const db = require("./connect.js");
 require("console.table");
 
 // All helper functions to interact with SQL data
-const viewAllEmployees = () => {
+async function viewAllEmployees() {
   const sql = `SELECT * FROM employees`
   db.query(sql, (err, results) => {
     if (err) {
       console.log(err.message);
       return;
     } else {
+      console.log('\033[2J');
       console.table(results);
+      console.log("\n Press any key to continue \n");
     }
   })
 };
@@ -74,19 +76,42 @@ const addEmployee = () => {
       },
     ])
     .then(({ firstName, lastName, roleTitle, department, salary, manager }) => {
-      const sql = `INSERT INTO employees (first_name, last_name, title, department, salary, manager) VALUES (?, ?, ?, ?, ?, ?)`;
-      const values = [firstName, lastName, roleTitle, department, salary, manager];
-
-      db.query(sql, values, (err, results) => {
+      const sql1 = `INSERT INTO roles (title, department, salary) VALUES (?, ?, ?)`;
+      const values1 = [roleTitle, department, salary];
+    
+      db.query(sql1, values1, (err, results) => {
         if (err) {
-        console.log(err.message);
-        return;
-      } else {
-        console.table(results);
-      }
-      });
-})
+          console.log(err.message);
+          return;
+        }
+    
+        const sql2 = `INSERT INTO employees (first_name, last_name, title, department, salary, manager) VALUES (?, ?, ?, ?, ?, ?)`;
+        const values2 = [firstName, lastName, roleTitle, department, salary, manager];
+    
+        db.query(sql2, values2, (err, results) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
 
+        const sqlJoin = `INSERT INTO employees (first_name, last_name, title, department, salary, manager)
+        SELECT ?, ?, roles.title, roles.department, roles.salary, ?
+        FROM roles
+        WHERE roles.title = ? AND roles.department = ?
+      `;
+      const joinValues = [firstName, lastName, manager, roleTitle, department];
+    
+        db.query(sqlJoin, joinValues, (err, results) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          }
+    
+          console.table(results);
+        });
+      });
+    });
+  });
 // Exporting all functions
 }
 module.exports = {
