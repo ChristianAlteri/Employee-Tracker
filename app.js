@@ -7,6 +7,8 @@ const {
   viewAllRoles,
   viewAllDepartments,
   addEmployee,
+  addRole,
+  addDepartment,
 } = require("./helper.js");
 const db = require("./connect.js");
 // const readline = require("readline");
@@ -81,8 +83,7 @@ async function start() {
 
     case "Add Employee":
       addEmployee()
-        .then(() => {
-        // console.log("\n Press any key to continue");
+      .then(() => {
         start();
         console.log("\n\n Add employee completed\n\n");
       });
@@ -91,7 +92,7 @@ async function start() {
       // TODO
 
       start();
-      
+
       break;
     case "View all Roles":
       viewAllRoles()
@@ -103,12 +104,15 @@ async function start() {
         });
       break;
     case "Add Role":
-      // TODO
-      console.log("Logic for Add Role selected.");
-
-      start();
-      console.log("\n Press any key to continue");
+      addRole()
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
+
     case "View all Departments":
       viewAllDepartments()
         .then(() => {
@@ -118,12 +122,15 @@ async function start() {
           console.error(err);
         });
       break;
-    case "Add departments":
-      // TODO
-      console.log("Logic for 'Add departments' selected.");
 
-      start();
-      console.log("\n Press any key to continue");
+    case "Add departments":
+      addDepartment()
+        .then(() => {
+          // start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
     case "Quit":
       console.log("\033[2J");
