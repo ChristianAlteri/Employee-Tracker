@@ -80,45 +80,54 @@ async function start() {
       break;
 
     case "Add Employee":
-      addEmployee().then(() => {
-        console.log("\n Press any key to continue");
+      addEmployee()
+        .then(() => {
+        // console.log("\n Press any key to continue");
         start();
+        console.log("\n\n Add employee completed\n\n");
       });
       break;
     case "Update Employee Role":
       // TODO
-      // rl.removeAllListeners("keypress");
+
       start();
-      console.log("\n Press any key to continue");
+      
       break;
     case "View all Roles":
-      viewAllRoles();
-      // rl.removeAllListeners("keypress");
-      start();
-      console.log("\n Press any key to continue");
+      viewAllRoles()
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
     case "Add Role":
       // TODO
       console.log("Logic for Add Role selected.");
-      // rl.removeAllListeners("keypress");
+
       start();
       console.log("\n Press any key to continue");
       break;
     case "View all Departments":
-      viewAllDepartments();
-      // rl.removeAllListeners("keypress");
-      start();
-      console.log("\n Press any key to continue");
+      viewAllDepartments()
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
     case "Add departments":
       // TODO
       console.log("Logic for 'Add departments' selected.");
-      // rl.removeAllListeners("keypress");
+
       start();
       console.log("\n Press any key to continue");
       break;
     case "Quit":
-      // rl.close();
+      console.log("\033[2J");
+      console.log("Thank you for using the Employee Tracker");
       break;
   }
 

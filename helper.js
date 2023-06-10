@@ -3,6 +3,7 @@ const db = require("./connect.js");
 require("console.table");
 
 // All helper functions to interact with SQL data
+// three view functions performing SQL script
 async function viewAllEmployees() {
   const sql = `SELECT * FROM employees`
   db.query(sql, (err, results) => {
@@ -16,29 +17,34 @@ async function viewAllEmployees() {
     }
   })
 };
-const viewAllRoles = () => {
+async function viewAllRoles() {
   const sql = `SELECT * FROM roles`
   db.query(sql, (err, results) => {
     if (err) {
       console.log(err.message);
       return;
     } else {
+      console.log('\033[2J');
       console.table(results);
+      console.log("\n Press any key to continue \n");
     }
   })
 };
-const viewAllDepartments = () => {
+async function viewAllDepartments() {
   const sql = `SELECT * FROM departments`
   db.query(sql, (err, results) => {
     if (err) {
       console.log(err.message);
       return;
     } else {
+      console.log('\033[2J');
       console.table(results);
+      console.log("\n Press any key to continue \n");
     }
   })
 };
 
+// ADD functions
 const addEmployee = () => {
   return inquirer
     .prompt([
@@ -67,15 +73,23 @@ const addEmployee = () => {
         type: "input",
         message: "Type the 'salary' for the 'new' employee",
         name: "salary",
+        validate: function (input) {
+          const salary = parseFloat(input);
+          return isNaN(salary) ? "Please enter a valid number for the salary." : true;
+        }
       },
       {
         type: "list",
         message: "Select the 'manager' for the 'new' employee",
         name: "manager",
         choices: ["John Doe", "Ash Rod", "Kun Singh", "Sarah Lourd", "No manager"],
-      },
+        filter: function (input) {
+          return input === "No manager" ? null : input;
+        }
+      }
     ])
     .then(({ firstName, lastName, roleTitle, department, salary, manager }) => {
+      
       const sql1 = `INSERT INTO roles (title, department, salary) VALUES (?, ?, ?)`;
       const values1 = [roleTitle, department, salary];
     
@@ -94,7 +108,7 @@ const addEmployee = () => {
             return;
           }
 
-        const sqlJoin = `INSERT INTO employees (first_name, last_name, title, department, salary, manager)
+        const sqlJoin = `
         SELECT ?, ?, roles.title, roles.department, roles.salary, ?
         FROM roles
         WHERE roles.title = ? AND roles.department = ?
@@ -106,8 +120,10 @@ const addEmployee = () => {
             console.log(err.message);
             return;
           }
-    
-          console.table(results);
+          console.log('\033[2J');
+          console.log(results);
+          console.log("\n Press any key to continue");
+          // console.table(results);
         });
       });
     });
