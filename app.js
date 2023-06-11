@@ -8,17 +8,9 @@ const {
   viewAllDepartments,
   addEmployee,
   addRole,
-  addDepartment,
+  addDepartment, editEmployee,
 } = require("./helper.js");
 const db = require("./connect.js");
-// const readline = require("readline");
-
-// Create a readline interface and use it to remove all listeners before making a recursive call to start()
-// const rl = readline.createInterface({
-//   input: process.stdin,
-//   output: process.stdout,
-// });
-// rl.setMaxListeners(Infinity);
 
 // Render title
 ASCII = () => {
@@ -60,7 +52,7 @@ async function start() {
       choices: [
         "View all Employees",
         "Add Employee",
-        "Update Employee Role",
+        "Edit Employee Role",
         "View all Roles",
         "Add Role",
         "View all Departments",
@@ -86,13 +78,19 @@ async function start() {
       .then(() => {
         start();
         console.log("\n\n Add employee completed\n\n");
+      })
+      .catch((err) => {
+        console.error(err);
       });
       break;
-    case "Update Employee Role":
-      // TODO
-
-      start();
-
+    case "Edit Employee Role":
+      editEmployee()
+      .then(() => {
+        start();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
       break;
     case "View all Roles":
       viewAllRoles()

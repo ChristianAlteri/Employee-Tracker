@@ -255,28 +255,121 @@ const addDepartment = () => {
             console.log("\033[2J");
             console.table(results);
             console.log("\n Press any key to continue \n");
-
-        // const sql2 = `INSERT INTO employees (first_name, last_name, title, department, salary, manager) VALUES (?, ?, ?, ?, ?, ?)`;
-        // const values2 = [
-        //   "no name",
-        //   "no name",
-        //   roleTitle,
-        //   department,
-        //   salary,
-        //   "no manager",
-        // ];
-
-        // db.query(sql2, values2, (err, results) => {
-        //   if (err) {
-        //     console.log(err.message);
-        //     return;
-        //   }
-
-            }
-          });
+          }
         });
       });
-    };
+    });
+};
+
+//Edit functions
+async function editEmployee() {
+  const sql = "SELECT * FROM employees";
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error executing SQL query: ", err);
+      return;
+    }
+    // Extract the values from the result set and store them as choices
+    const choices = results.map((row) => ({
+      name: row.first_name + " " + row.last_name + " - " + row.title,
+      value: row.id,
+    }));
+    inquirer.prompt([
+      {
+        type: "list",
+        message: "\n Select the 'employee' you want to effect",
+        // make sure to convert selected name into the appropriate id. maybe do above
+        name: "id",
+        choices: choices,
+      }
+    ]).then(({ id }) => {
+      inquirer.prompt([
+        {
+          type: "list",
+          message: "Would you like to ....",
+          name: "editChoices",
+          choices: [
+            {
+              name: "Delete Employee",
+              value: "delete",
+            },
+            {
+              name: "Update Employee",
+              value: "update",
+            },
+          ]
+        },
+      ]).then(({ editChoices }) => {
+        switch (editChoices) {
+          case "delete":
+            deleteEmployee(id)
+              
+            break;
+
+          case "update":
+            updateEmployee(id)
+            
+            break;
+        }
+      });
+    });
+  });
+}
+
+
+async function deleteEmployee(id) {
+  console.log("deleting");
+}
+
+async function updateEmployee(id) {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type the 'first name' for the employee",
+        name: "firstName",
+      },
+      {
+        type: "input",
+        message: "Type the 'last name' for the employee",
+        name: "lastName",
+      },
+      {
+        type: "input",
+        message: "Type the 'title' for the employee",
+        name: "roleTitle",
+      },
+      {
+        type: "input",
+        message: "Type the 'department' for the employee",
+        name: "department",
+      },
+      {
+        type: "input",
+        message: "Type the 'department' for the employee",
+        name: "salary",
+      },
+      {
+        type: "input",
+        message: "Type the 'department' for the employee",
+        name: "manager",
+      },
+    ])
+    .then(({ firstName, lastName, roleTitle, department, salary, manager }) => {
+      const sql1 = `UPDATE employees SET first_name = ?, last_name = ?, title = ?, department = ?, salary = ?, manager = ? WHERE id = ?`;
+      const values1 = [firstName, lastName, roleTitle, department, salary, manager, id];
+
+      db.query(sql1, values1, (err, results) => {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+        console.log("\033[2J");
+        console.table(results);
+        console.log("\n Press any key to continue \n");
+      });
+    });
+}
 
 // Exporting all functions
 
@@ -285,5 +378,7 @@ module.exports = {
   viewAllRoles,
   viewAllDepartments,
   addEmployee,
-  addRole, addDepartment,
+  addRole,
+  addDepartment,
+  editEmployee,
 };
