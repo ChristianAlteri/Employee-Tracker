@@ -357,6 +357,157 @@ const addDepartment = () => {
     });
 };
 
+// Edit function
+function editEmployee() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Would you like to ....",
+        name: "editChoices",
+        choices: [
+          {
+            name: "Delete Employee",
+            value: "delete",
+          },
+          {
+            name: "Update Employee",
+            value: "update",
+          },
+        ],
+      },
+    ])
+    .then(({ editChoices }) => {
+      switch (editChoices) {
+        case "delete":
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                message: "\n Select the 'employee' you want to delete",
+                name: "id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT * FROM employees";
+                    db.query(sql, (err, results) => {
+                      if (err) {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      }
+                      const employeeChoices = results.map((row) => ({
+                        name: row.first_name + " " + row.last_name,
+                        value: row.id,
+                      }));
+                      resolve(employeeChoices);
+                    });
+                  });
+                },
+              }])
+              .then(({ id }) => {
+                const sql = `DELETE from employees WHERE id = ?`;
+                const values = [ id ];
+  
+                db.query(sql, values, (err, results) => {
+                  if (err) {
+                    console.log(err.message);
+                    return;
+                  }
+                  console.log("\033[2J");
+                  console.table(results);
+                  console.log('\nSuccusfully deleted\n');
+                  console.log("\n Press any key to continue \n");
+                });
+              });
+          break;
+
+        case "update":
+          inquirer
+            .prompt([
+              {
+                type: "list",
+                message: "\n Select the 'employee' you want to update",
+                name: "id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT * FROM employees";
+                    db.query(sql, (err, results) => {
+                      if (err) {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      }
+                      const employeeChoices = results.map((row) => ({
+                        name: row.first_name + " " + row.last_name,
+                        value: row.id,
+                      }));
+                      resolve(employeeChoices);
+                    });
+                  });
+                },
+              },
+              {
+                type: "input",
+                message: "Type the 'first name' for the employee",
+                name: "firstName",
+              },
+              {
+                type: "input",
+                message: "Type the 'last name' for the employee",
+                name: "lastName",
+              },
+              {
+                type: "list",
+                message: "Select the 'role' for the updated employee",
+                name: "role_id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT id, title FROM roles";
+                    db.query(sql, (err, results) => {
+                      if (err) {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      }
+                      const rolesChoices = results.map((row) => ({
+                        name: row.title,
+                        value: row.id,
+                      }));
+                      resolve(rolesChoices);
+                    });
+                  });
+                },
+              },
+              {
+                type: "list",
+                message: "Select the 'manager' for the 'new' employee",
+                name: "manager_id",
+                choices: [
+                  { name: "John Doe", value: 1 },
+                  { name: "Ash Rod", value: 3 },
+                  { name: "Kun Singh", value: 5 },
+                  { name: "Sarah Lourd", value: 7 },
+                  { name: "No Manager", value: null },
+                ],
+              },
+            ])
+            .then(({ id, firstName, lastName, role_id, manager_id }) => {
+              const sql = `UPDATE employees SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?`;
+              const values = [firstName, lastName, role_id, manager_id, id];
+
+              db.query(sql, values, (err, results) => {
+                if (err) {
+                  console.log(err.message);
+                  return;
+                }
+                console.log("\033[2J");
+                console.table(results);
+                console.log('\nSuccusfully updated\n');
+                console.log("\n Press any key to continue \n");
+              });
+            });
+          break;
+      }
+    });
+}
+
 
 
 // Exporting all functions
@@ -366,7 +517,7 @@ module.exports = {
   viewAllRoles,
   viewAllDepartments,
   viewTotalSalary,
-  addEmployee, addRole, addDepartment,
+  addEmployee, addRole, addDepartment, editEmployee,
 };
 
 

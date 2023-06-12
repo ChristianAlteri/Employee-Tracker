@@ -5,7 +5,7 @@ const inquirer = require("inquirer");
 const {
   viewAllEmployees,
   viewAllRoles,
-  viewAllDepartments, viewTotalSalary, addEmployee, addRole, addDepartment,
+  viewAllDepartments, viewTotalSalary, addEmployee, addRole, addDepartment, editEmployee,
 } = require("./helper.js");
 const db = require("./connect.js");
 
@@ -49,7 +49,7 @@ async function start() {
       choices: [
         "View all Employees",
         "Add Employee",
-        "Edit Employee Role",
+        "Edit Employee",
         "View all Roles",
         "Add Role",
         "View all Departments",
@@ -80,14 +80,14 @@ async function start() {
         console.error(err);
       });
       break;
-    case "Edit Employee Role":
+    case "Edit Employee":
       editEmployee()
-      .then(() => {
-        start();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+      // .then(() => {
+      //   start();
+      // })
+      // .catch((err) => {
+      //   console.error(err);
+      // });
       break;
     case "View all Roles":
       viewAllRoles()
