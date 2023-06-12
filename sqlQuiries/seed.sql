@@ -1,33 +1,31 @@
+-- Inserting data into employees table
 
-
-INSERT INTO employees (first_name, last_name, title, department, salary, manager)
+-- Inserting data into roles table
+INSERT INTO roles (id, title, salary, department_id)
 VALUES
-  ('John', 'Doe', 'Sales lead', 1, 100000, NULL),
-  ('Mike', 'Chan', 'Salesperson', 1, 80000, 'John Doe'),
-  ('Ash', 'Rod', 'Lead engineer', 2, 150000, NULL),
-  ('Kev', 'Tup', 'Software engineer', 2, 120000, 'Ash Rod'),
-  ('Kun', 'Singh', 'Account manager', 3, 160000, NULL),
-  ('Malia', 'Brown', 'Accountant', 3, 125000, 'Kun Singh'),
-  ('Sarah', 'Lourd', 'Legal team lead', 4, 250000, NULL),
-  ('Tom', 'Allen', 'Lawyer', 4, 190000, 'Sarah Lourd');
+  (1, 'Sales lead', 100000, 1),
+  (2, 'Salesperson', 80000, 1),
+  (3, 'Lead engineer', 150000, 2),
+  (4, 'Software engineer', 120000, 2),
+  (5, 'Account manager', 160000, 3),
+  (6, 'Accountant', 125000, 3),
+  (7, 'Legal team lead', 250000, 4),
+  (8, 'Lawyer', 190000, 4);
 
-
-INSERT INTO roles (id, title, department, salary)
-VALUES
-  (1, 'Sales lead', 1, 100000),
-  (2, 'Salesperson', 1, 80000),
-  (3, 'Lead engineer', 2, 150000),
-  (4, 'Software engineer', 2, 120000),
-  (5, 'Account manager', 3, 160000),
-  (6, 'Accountant', 3, 125000),
-  (7, 'Legal team lead', 4, 250000),
-  (8, 'Lawyer', 4, 190000);
-
-
+-- Inserting data into departments table
 INSERT INTO departments (id, name)
 VALUES
+  (1, 'Sales'),
   (2, 'Engineering'),
   (3, 'Finance'),
-  (4, 'Legal'),
-  (1, 'Sales');
-
+  (4, 'Legal');
+INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
+VALUES
+  (1, 'John', 'Doe', 1, NULL),
+  (2, 'Mike', 'Chan', 2, 1),
+  (3, 'Ash', 'Rod', 3, NULL),
+  (4, 'Kev', 'Tup', 4, 3),
+  (5, 'Kun', 'Singh', 5, NULL),
+  (6, 'Malia', 'Brown', 6, 5),
+  (7, 'Sarah', 'Lourd', 7, NULL),
+  (8, 'Tom', 'Allen', 8, 7);
