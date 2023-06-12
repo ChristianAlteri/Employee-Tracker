@@ -60,7 +60,7 @@ async function viewTotalSalary() {
     }
   });
 }
-
+// ADD functions
 const addEmployee = () => {
   return inquirer
     .prompt([
@@ -198,7 +198,7 @@ const addEmployee = () => {
                 return;
               } else {
                 console.log("\033[2J");
-                console.log("\n New employee added into data base \n\n");
+                console.log("\n New employee added into database \n\n");
                 console.table(results);
                 console.log("\n Press any key to continue \n");
               }
@@ -296,6 +296,67 @@ const addRole = () => {
       });
     });
 };
+const addDepartment = () => {
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type the 'id' of the 'new' department",
+        name: "id",
+        validate: function (input) {
+          const user_input = parseInt(input);
+          const sql = "SELECT id FROM departments";
+          return new Promise((resolve, reject) => {
+            db.query(sql, (err, results) => {
+              if (err) {
+                console.error("Error executing SQL query: ", err);
+                reject(err);
+              }
+              const departmentIds = results.map((row) => row.id);
+              const isInputValid = departmentIds.every(
+                (departmentId) => departmentId < user_input
+              );
+              if (isInputValid) {
+                resolve(true);
+              } else {
+                reject(
+                  "Please enter an ID greater than any current department ID."
+                );
+              }
+            });
+          });
+        },
+      },
+      {
+        type: "input",
+        message: "Type the 'name' for the 'new' department",
+        name: "title",
+      },
+    ])
+    .then(({ id, title }) => {
+      const sql = `INSERT INTO departments (id, name) VALUES (?, ?)`;
+      const values = [id, title];
+      db.query(sql, values, (err, results) => {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+        const sql = `SELECT * FROM departments`;
+        db.query(sql, (err, results) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          } else {
+            console.log("\033[2J");
+            console.log("\n New department added into database \n\n");
+            console.table(results);
+            console.log("\n Press any key to continue \n");
+          }
+        });
+      });
+    });
+};
+
 
 
 // Exporting all functions
@@ -305,7 +366,7 @@ module.exports = {
   viewAllRoles,
   viewAllDepartments,
   viewTotalSalary,
-  addEmployee, addRole,
+  addEmployee, addRole, addDepartment,
 };
 
 

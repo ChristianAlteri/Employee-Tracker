@@ -5,7 +5,7 @@ const inquirer = require("inquirer");
 const {
   viewAllEmployees,
   viewAllRoles,
-  viewAllDepartments, viewTotalSalary, addEmployee, addRole,
+  viewAllDepartments, viewTotalSalary, addEmployee, addRole, addDepartment,
 } = require("./helper.js");
 const db = require("./connect.js");
 
@@ -53,7 +53,7 @@ async function start() {
         "View all Roles",
         "Add Role",
         "View all Departments",
-        "Add Departments",
+        "Add Department",
         "View Total of Salary",
         "Quit",
       ],
@@ -118,10 +118,10 @@ async function start() {
         });
       break;
 
-    case "Add departments":
+    case "Add Department":
       addDepartment()
         .then(() => {
-          // start();
+          start();
         })
         .catch((err) => {
           console.error(err);
