@@ -137,22 +137,29 @@ const addEmployee = () => {
           { name: "Ash Rod", value: 3 },
           { name: "Kun Singh", value: 5 },
           { name: "Sarah Lourd", value: 7 },
-          { name: "No Manager", value: "No Manager" },
+          { name: "No Manager", value: null },
         ],
-        filter: function (input) {
-          return input === "No manager" ? null : input;
-        },
       },
       {
         type: "list",
-        message: "Select the 'department' for the 'new' employee",
+        message: "Select the 'department' for the 'new' role",
         name: "department_id",
-        choices: [
-          { name: "Sales", value: 1 },
-          { name: "Engineering", value: 2 },
-          { name: "Finance", value: 3 },
-          { name: "Legal", value: 4 },
-        ],
+        choices: function () {
+          return new Promise((resolve, reject) => {
+            const sql = "SELECT id, name FROM departments";
+            db.query(sql, (err, results) => {
+              if (err) {
+                console.error("Error executing SQL query: ", err);
+                reject(err);
+              }
+              const departmentChoices = results.map((row) => ({
+                name: row.name,
+                value: row.id,
+              }));
+              resolve(departmentChoices);
+            });
+          });
+        },
       },
     ])
     .then(
@@ -166,7 +173,7 @@ const addEmployee = () => {
         roleID,
         manager_id,
       }) => {
-        const roleIdValue = roleID ? id : 99;
+        const roleIdValue = roleID ? id : id;
         const sql1 = `INSERT INTO roles (id, title, salary, department_id) VALUES (?, ?, ?, ?)`;
         const values1 = [id, title, salary, department_id];
         // let role_id = id
@@ -191,7 +198,7 @@ const addEmployee = () => {
                 return;
               } else {
                 console.log("\033[2J");
-                console.log("\n New employee added into data base \n");
+                console.log("\n New employee added into data base \n\n");
                 console.table(results);
                 console.log("\n Press any key to continue \n");
               }
@@ -201,6 +208,95 @@ const addEmployee = () => {
       }
     );
 };
+const addRole = () => {
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type the 'id' of the 'new' role",
+        name: "id",
+        validate: function (input) {
+          const user_input = parseInt(input);
+          const sql = "SELECT id FROM roles";
+          return new Promise((resolve, reject) => {
+            db.query(sql, (err, results) => {
+              if (err) {
+                console.error("Error executing SQL query: ", err);
+                reject(err);
+              }
+              const roleIds = results.map((row) => row.id);
+              const isInputValid = roleIds.every((roleId) => roleId < user_input);
+              if (isInputValid) {
+                resolve(true);
+              } else {
+                reject("Please enter an ID greater than any current role ID.");
+              }
+            });
+          });
+        },
+      },
+      {
+        type: "input",
+        message: "Type the 'title' for the 'new' role",
+        name: "title",
+      },
+      {
+        type: "input",
+        message: "Type the 'salary' for the 'new' role",
+        name: "salary",
+        validate: function (input) {
+          const salary = parseFloat(input);
+          return isNaN(salary)
+            ? "Please enter a valid number for the salary."
+            : true;
+        },
+      },
+      {
+        type: "list",
+        message: "Select the 'department' for the 'new' role",
+        name: "department_id",
+        choices: function () {
+          return new Promise((resolve, reject) => {
+            const sql = "SELECT id, name FROM departments";
+            db.query(sql, (err, results) => {
+              if (err) {
+                console.error("Error executing SQL query: ", err);
+                reject(err);
+              }
+              const departmentChoices = results.map((row) => ({
+                name: row.name,
+                value: row.id,
+              }));
+              resolve(departmentChoices);
+            });
+          });
+        },
+      },
+    ])
+    .then(({ id, title, department_id, salary }) => {
+      const sql = 'INSERT INTO roles (id, title, department_id, salary) VALUES (?, ?, ?, ?)';
+      const values = [id, title, department_id, salary];
+      db.query(sql, values, (err, results) => {
+        if (err) {
+          console.log(err.message);
+          return;
+        }
+        const selectSql = `SELECT * FROM roles`;
+        db.query(selectSql, (err, results) => {
+          if (err) {
+            console.log(err.message);
+            return;
+          } else {
+            console.log("\033[2J");
+            console.log("\n New role added into the database \n");
+            console.table(results);
+            console.log("\n Press any key to continue \n");
+          }
+        });
+      });
+    });
+};
+
 
 // Exporting all functions
 
@@ -209,5 +305,20 @@ module.exports = {
   viewAllRoles,
   viewAllDepartments,
   viewTotalSalary,
-  addEmployee,
+  addEmployee, addRole,
 };
+
+
+
+
+// {
+//   type: "list",
+//   message: "Select the 'department' for the 'new' employee",
+//   name: "department_id",
+//   choices: [
+//     { name: "Sales", value: 1 },
+//     { name: "Engineering", value: 2 },
+//     { name: "Finance", value: 3 },
+//     { name: "Legal", value: 4 },
+//   ],
+// },

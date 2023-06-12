@@ -5,7 +5,7 @@ const inquirer = require("inquirer");
 const {
   viewAllEmployees,
   viewAllRoles,
-  viewAllDepartments, viewTotalSalary, addEmployee,
+  viewAllDepartments, viewTotalSalary, addEmployee, addRole,
 } = require("./helper.js");
 const db = require("./connect.js");
 
