@@ -2,14 +2,19 @@
 const cTable = require("console.table");
 const mysql = require("mysql2/promise");
 const inquirer = require("inquirer");
+// Load helper functions
 const {
   viewAllEmployees,
-  viewAllRoles,
-  viewAllDepartments, viewTotalSalary, addEmployee, 
-  addRole, 
+  addEmployee,
+  editEmployee,
+} = require("./model/employee.js");
+const {
+  viewAllDepartments,
+  viewTotalSalary,
   addDepartment,
-   editEmployee,
-} = require("./helper.js");
+} = require("./model/department.js");
+const { viewAllRoles, addRole } = require("./model/roles.js");
+// Connect to database
 const db = require("./connect.js");
 
 // Render title
@@ -76,21 +81,21 @@ async function start() {
 
     case "Add Employee":
       addEmployee()
-      .then(() => {
-        start();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
     case "Edit Employee":
       editEmployee()
-      .then(() => {
-        start();
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+        .then(() => {
+          start();
+        })
+        .catch((err) => {
+          console.error(err);
+        });
       break;
     case "View all Roles":
       viewAllRoles()
@@ -145,8 +150,6 @@ async function start() {
       break;
   }
 
-  // You can access the selected option as 'main' variable here
-  // Perform further actions based on the selected option
 }
 ASCII();
 start();
