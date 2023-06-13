@@ -5,7 +5,9 @@ const inquirer = require("inquirer");
 const {
   viewAllEmployees,
   viewAllRoles,
-  viewAllDepartments, viewTotalSalary, addEmployee, addRole, addDepartment, editEmployee,
+  viewAllDepartments, viewTotalSalary, addEmployee, 
+  addRole, 
+  // addDepartment, editEmployee,
 } = require("./helper.js");
 const db = require("./connect.js");
 
@@ -82,12 +84,12 @@ async function start() {
       break;
     case "Edit Employee":
       editEmployee()
-      // .then(() => {
-      //   start();
-      // })
-      // .catch((err) => {
-      //   console.error(err);
-      // });
+      .then(() => {
+        start();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
       break;
     case "View all Roles":
       viewAllRoles()
