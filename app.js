@@ -7,7 +7,8 @@ const {
   viewAllRoles,
   viewAllDepartments, viewTotalSalary, addEmployee, 
   addRole, 
-  // addDepartment, editEmployee,
+  addDepartment,
+   editEmployee,
 } = require("./helper.js");
 const db = require("./connect.js");
 

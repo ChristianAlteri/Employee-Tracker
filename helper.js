@@ -12,12 +12,12 @@ async function viewAllEmployees() {
     .query(sql)
     .then((results) => {
       console.log("\033[2J");
-      console.table(results);
+      console.table(results[0]);
+      // console.log(results[0]);
       console.log("\n Press any key to continue \n");
     })
     .catch((err) => console.log(err));
 }
-
 async function viewAllRoles() {
   const sql = `SELECT * FROM roles`;
   return db
@@ -25,12 +25,11 @@ async function viewAllRoles() {
     .query(sql)
     .then((results) => {
       console.log("\033[2J");
-      console.table(results);
+      console.table(results[0]);
       console.log("\n Press any key to continue \n");
     })
     .catch((err) => console.log(err));
 }
-
 async function viewAllDepartments() {
   const sql = `SELECT * FROM departments`;
   return db
@@ -38,7 +37,7 @@ async function viewAllDepartments() {
     .query(sql)
     .then((results) => {
       console.log("\033[2J");
-      console.table(results);
+      console.table(results[0]);
       console.log("\n Press any key to continue \n");
     })
     .catch((err) => console.log(err));
@@ -53,7 +52,7 @@ async function viewTotalSalary() {
     .query(sql)
     .then((results) => {
       console.log("\033[2J");
-      console.table(results);
+      console.table(results[0]);
       console.log("\n Press any key to continue \n");
     })
     .catch((err) => console.log(err));
@@ -209,7 +208,6 @@ const addEmployee = () => {
       }
     );
 };
-
 const addRole = () => {
   return inquirer
     .prompt([
@@ -306,219 +304,226 @@ const addRole = () => {
       console.log(err.message);
     });
 };
+const addDepartment = () => {
+  return inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Type the 'id' of the 'new' department",
+        name: "id",
+        validate: function (input) {
+          const user_input = parseInt(input);
+          const sql = "SELECT id FROM departments";
+          return new Promise((resolve, reject) => {
+            return db.promise()
+              .query(sql)
+              .then(([results]) => {
+                const departmentIds = results.map((row) => row.id);
+                const isInputValid = departmentIds.every(
+                  (departmentId) => departmentId < user_input
+                );
+                if (isInputValid) {
+                  resolve(true);
+                } else {
+                  reject(
+                    "Please enter an ID greater than any current department ID."
+                  );
+                }
+              })
+              .catch((err) => {
+                console.error("Error executing SQL query: ", err);
+                reject(err);
+              });
+          });
+        },
+      },
+      {
+        type: "input",
+        message: "Type the 'name' for the 'new' department",
+        name: "title",
+      },
+    ])
+    .then(({ id, title }) => {
+      const sql = `INSERT INTO departments (id, name) VALUES (?, ?)`;
+      const values = [id, title];
 
-    
+      return db.promise()
+        .query(sql, values)
+        .then(() => {
+          const selectSql = `SELECT * FROM departments`;
+          return db.promise().query(selectSql);
+        })
+        .then(([results]) => {
+          console.log("\033[2J");
+          console.log("\n New department added into the database \n");
+          console.table(results);
+          console.log("\n Press any key to continue \n");
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+};
 
-// const addDepartment = () => {
-//   return inquirer
-//     .prompt([
-//       {
-//         type: "input",
-//         message: "Type the 'id' of the 'new' department",
-//         name: "id",
-//         validate: function (input) {
-//           const user_input = parseInt(input);
-//           const sql = "SELECT id FROM departments";
-//           return new Promise((resolve, reject) => {
-//             return db.promise().query(sql, (err, results) => {
-//               if (err) {
-//                 console.error("Error executing SQL query: ", err);
-//                 reject(err);
-//               }
-//               const departmentIds = results.map((row) => row.id);
-//               const isInputValid = departmentIds.every(
-//                 (departmentId) => departmentId < user_input
-//               );
-//               if (isInputValid) {
-//                 resolve(true);
-//               } else {
-//                 reject(
-//                   "Please enter an ID greater than any current department ID."
-//                 );
-//               }
-//             });
-//           });
-//         },
-//       },
-//       {
-//         type: "input",
-//         message: "Type the 'name' for the 'new' department",
-//         name: "title",
-//       },
-//     ])
-//     .then(({ id, title }) => {
-//       const sql = `INSERT INTO departments (id, name) VALUES (?, ?)`;
-//       const values = [id, title];
-//       return db.promise().query(sql, values, (err, results) => {
-//         if (err) {
-//           console.log(err.message);
-//           return;
-//         }
-//         const sql = `SELECT * FROM departments`;
-//         return db.promise().query(sql, (err, results) => {
-//           if (err) {
-//             console.log(err.message);
-//             return;
-//           } else {
-//             console.log("\033[2J");
-//             console.log("\n New department added into database \n\n");
-//             console.table(results);
-//             console.log("\n Press any key to continue \n");
-//           }
-//         });
-//       });
-//     });
-// };
 
-// // Edit function
-// function editEmployee() {
+// Edit function
+function editEmployee() {
+  return inquirer
+    .prompt([
+      {
+        type: "list",
+        message: "Would you like to ....",
+        name: "editChoices",
+        choices: [
+          {
+            name: "Delete Employee",
+            value: "delete",
+          },
+          {
+            name: "Update Employee",
+            value: "update",
+          },
+        ],
+      },
+    ])
+    .then(({ editChoices }) => {
+      switch (editChoices) {
+        case "delete":
+          return inquirer
+            .prompt([
+              {
+                type: "list",
+                message: "\n Select the 'employee' you want to delete",
+                name: "id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT * FROM employees";
+                    return db.promise()
+                      .query(sql)
+                      .then(([results]) => {
+                        const employeeChoices = results.map((row) => ({
+                          name: row.first_name + " " + row.last_name,
+                          value: row.id,
+                        }));
+                        resolve(employeeChoices);
+                      })
+                      .catch((err) => {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      });
+                  });
+                },
+              },
+            ])
+            .then(({ id }) => {
+              const sql = `DELETE from employees WHERE id = ?`;
+              const values = [id];
 
-//   return inquirer
-//     .prompt([
-//       {
-//         type: "list",
-//         message: "Would you like to ....",
-//         name: "editChoices",
-//         choices: [
-//           {
-//             name: "Delete Employee",
-//             value: "delete",
-//           },
-//           {
-//             name: "Update Employee",
-//             value: "update",
-//           },
-//         ],
-//       },
-//     ])
-//     .then(({ editChoices }) => {
-//       switch (editChoices) {
-//         case "delete":
-//           return inquirer
-//             .prompt([
-//               {
-//                 type: "list",
-//                 message: "\n Select the 'employee' you want to delete",
-//                 name: "id",
-//                 choices: function () {
-//                   return new Promise((resolve, reject) => {
-//                     const sql = "SELECT * FROM employees";
-//                     return db.promise().query(sql, (err, results) => {
-//                       if (err) {
-//                         console.error("Error executing SQL query: ", err);
-//                         reject(err);
-//                       }
-//                       const employeeChoices = results.map((row) => ({
-//                         name: row.first_name + " " + row.last_name,
-//                         value: row.id,
-//                       }));
-//                       resolve (employeeChoices);
-//                     });
-//                   });
-//                 },
-//               }])
-//               .then(({ id }) => {
-//                 const sql = `DELETE from employees WHERE id = ?`;
-//                 const values = [ id ];
+              return db.promise()
+                .query(sql, values)
+                .then(([results]) => {
+                  console.log("\033[2J");
+                  console.table(results);
+                  console.log("\n Successfully deleted\n");
+                  console.log("\n Press any key to continue \n");
+                })
+                .catch((err) => {
+                  console.log(err.message);
+                });
+            });
 
-//                 return db.promise().query(sql, values, (err, results) => {
-//                   if (err) {
-//                     console.log(err.message);
-//                     return;
-//                   }
-//                   console.log("\033[2J");
-//                   console.table(results);
-//                   console.log('\nSuccusfully deleted\n');
-//                   console.log("\n Press any key to continue \n");
-//                 });
-//               });
+        case "update":
+          return inquirer
+            .prompt([
+              {
+                type: "list",
+                message: "\n Select the 'employee' you want to update",
+                name: "id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT * FROM employees";
+                    return db.promise()
+                      .query(sql)
+                      .then(([results]) => {
+                        const employeeChoices = results.map((row) => ({
+                          name: row.first_name + " " + row.last_name,
+                          value: row.id,
+                        }));
+                        resolve(employeeChoices);
+                      })
+                      .catch((err) => {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      });
+                  });
+                },
+              },
+              {
+                type: "input",
+                message: "Type the 'first name' for the employee",
+                name: "firstName",
+              },
+              {
+                type: "input",
+                message: "Type the 'last name' for the employee",
+                name: "lastName",
+              },
+              {
+                type: "list",
+                message: "Select the 'role' for the updated employee",
+                name: "role_id",
+                choices: function () {
+                  return new Promise((resolve, reject) => {
+                    const sql = "SELECT id, title FROM roles";
+                    return db.promise()
+                      .query(sql)
+                      .then(([results]) => {
+                        const rolesChoices = results.map((row) => ({
+                          name: row.title,
+                          value: row.id,
+                        }));
+                        resolve(rolesChoices);
+                      })
+                      .catch((err) => {
+                        console.error("Error executing SQL query: ", err);
+                        reject(err);
+                      });
+                  });
+                },
+              },
+              {
+                type: "list",
+                message: "Select the 'manager' for the 'new' employee",
+                name: "manager_id",
+                choices: [
+                  { name: "John Doe", value: 1 },
+                  { name: "Ash Rod", value: 3 },
+                  { name: "Kun Singh", value: 5 },
+                  { name: "Sarah Lourd", value: 7 },
+                  { name: "No Manager", value: null },
+                ],
+              },
+            ])
+            .then(({ id, firstName, lastName, role_id, manager_id }) => {
+              const sql = `UPDATE employees SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?`;
+              const values = [firstName, lastName, role_id, manager_id, id];
 
-//         case "update":
-//           return inquirer
-//             .prompt([
-//               {
-//                 type: "list",
-//                 message: "\n Select the 'employee' you want to update",
-//                 name: "id",
-//                 choices: function () {
-//                   return new Promise((resolve, reject) => {
-//                     const sql = "SELECT * FROM employees";
-//                     return db.promise().query(sql, (err, results) => {
-//                       if (err) {
-//                         console.error("Error executing SQL query: ", err);
-//                         reject(err);
-//                       }
-//                       const employeeChoices = results.map((row) => ({
-//                         name: row.first_name + " " + row.last_name,
-//                         value: row.id,
-//                       }));
-//                       resolve(employeeChoices);
-//                     });
-//                   });
-//                 },
-//               },
-//               {
-//                 type: "input",
-//                 message: "Type the 'first name' for the employee",
-//                 name: "firstName",
-//               },
-//               {
-//                 type: "input",
-//                 message: "Type the 'last name' for the employee",
-//                 name: "lastName",
-//               },
-//               {
-//                 type: "list",
-//                 message: "Select the 'role' for the updated employee",
-//                 name: "role_id",
-//                 choices: function () {
-//                   return new Promise((resolve, reject) => {
-//                     const sql = "SELECT id, title FROM roles";
-//                     return db.promise().query(sql, (err, results) => {
-//                       if (err) {
-//                         console.error("Error executing SQL query: ", err);
-//                         reject(err);
-//                       }
-//                       const rolesChoices = results.map((row) => ({
-//                         name: row.title,
-//                         value: row.id,
-//                       }));
-//                       resolve(rolesChoices);
-//                     });
-//                   });
-//                 },
-//               },
-//               {
-//                 type: "list",
-//                 message: "Select the 'manager' for the 'new' employee",
-//                 name: "manager_id",
-//                 choices: [
-//                   { name: "John Doe", value: 1 },
-//                   { name: "Ash Rod", value: 3 },
-//                   { name: "Kun Singh", value: 5 },
-//                   { name: "Sarah Lourd", value: 7 },
-//                   { name: "No Manager", value: null },
-//                 ],
-//               },
-//             ])
-//             .then(({ id, firstName, lastName, role_id, manager_id }) => {
-//               const sql = `UPDATE employees SET first_name = ?, last_name = ?, role_id = ?, manager_id = ? WHERE id = ?`;
-//               const values = [firstName, lastName, role_id, manager_id, id];
+              return db.promise()
+                .query(sql, values)
+                .then(([results]) => {
+                  console.log("\033[2J");
+                  console.table(results);
+                  console.log("\n Successfully updated\n");
+                  console.log("\n Press any key to continue \n");
+                })
+                .catch((err) => {
+                  console.log(err.message);
+                });
+            });
+      }
+    });
+}
 
-//               return db.promise().query(sql, values, (err, results) => {
-//                 if (err) {
-//                   console.log(err.message);
-//                   return;
-//                 }
-//                 console.log("\033[2J");
-//                 console.table(results);
-//                 console.log('\nSuccusfully updated\n');
-//                 console.log("\n Press any key to continue \n");
-//               });
-//             });
-//       }
-//     });
-// }
 
 // Exporting all functions
 
@@ -529,7 +534,8 @@ module.exports = {
   viewTotalSalary,
   addEmployee,
   addRole,
-  //  addDepartment, editEmployee,
+   addDepartment, 
+  editEmployee,
 };
 
 // {
