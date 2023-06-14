@@ -47,8 +47,9 @@ ASCII = () => {
     "......................................................................................."
   );
 };
-
+// Begin the main prompts
 async function start() {
+  // Initialise main so we can pass it along the switch chain
   const { main } = await inquirer.prompt([
     {
       type: "list",
@@ -67,9 +68,10 @@ async function start() {
       ],
     },
   ]);
-
+  // Using switch() instead of if "view all ...." ==== "view all ...."
   switch (main) {
     case "View all Employees":
+      // Call the helper function then call start to re prompt main menu. (Same structure for all questions)
       viewAllEmployees()
         .then(() => {
           start();
@@ -149,7 +151,7 @@ async function start() {
       console.log("Thank you for using the Employee Tracker");
       break;
   }
-
 }
+// Funcs defined
 ASCII();
 start();

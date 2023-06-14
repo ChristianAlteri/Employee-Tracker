@@ -1,12 +1,9 @@
-// require('dotenv').config();
+// Import dependencies
 const mysql = require("mysql2");
 
-
+// Create connection to DB
 const db = mysql.createConnection({
     host: "localhost",
-    // user:   process.env.DB_USER,
-    // password: process.env.DB_PASSWORD,
-    // database: process.env.DB_NAME,
     user:   'root',
     password: 'password',
     database: 'employee_db',
@@ -15,7 +12,7 @@ const db = mysql.createConnection({
   db.connect(function (err) {
     if (err) throw err;
   })
-
+// export db to use i query prompts
 module.exports = db
 
 

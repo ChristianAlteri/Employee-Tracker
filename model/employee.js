@@ -69,6 +69,7 @@ const addEmployee = () => {
         type: "input",
         message: "Type the 'salary' for the 'new' employee",
         name: "salary",
+        // Using inquirer validate: to validate input
         validate: function (input) {
           const salary = parseFloat(input);
           return isNaN(salary)
@@ -81,6 +82,7 @@ const addEmployee = () => {
         message: "Is the 'role' id the same as the 'id'?",
         name: "roleID",
         choices: [
+          // You can assign what the client sees and value is the actual value parsed down the chain
           { name: "Yes", value: true },
           { name: "No", value: false },
         ],
@@ -102,6 +104,7 @@ const addEmployee = () => {
         message: "Select the 'department' for the 'new' role",
         name: "department_id",
         choices: function () {
+          // Loop through sql query and destructure. map the results as the choices
           return new Promise((resolve, reject) => {
             const sql = "SELECT id, name FROM departments";
             db.promise()
@@ -167,6 +170,7 @@ const addEmployee = () => {
 };
 
 // Edit function
+// Much the same logic as the rest of funcs just here we nest inquirer within inquirer. Here it was most important to control the flow of data using promise and async func. I ran into issues when the second prompt ran along side the main menu
 function editEmployee() {
   return inquirer
     .prompt([

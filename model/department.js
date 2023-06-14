@@ -1,13 +1,17 @@
+// Imprt dependencies
 const inquirer = require("inquirer");
 const db = require("../connect.js");
 const { NULL } = require("mysql/lib/protocol/constants/types.js");
 require("console.table");
 
 async function viewAllDepartments() {
+  // sql prompt
   const sql = `SELECT * FROM departments`;
+  // Return the data from the query
   return db
     .promise()
     .query(sql)
+    // Deconstruct then cltable the results
     .then((results) => {
       console.log("\033[2J");
       console.table(results[0]);
@@ -41,6 +45,7 @@ const addDepartment = () => {
         validate: function (input) {
           const user_input = parseInt(input);
           const sql = "SELECT id FROM departments";
+          // Using promise to control data flow
           return new Promise((resolve, reject) => {
             return db
               .promise()
@@ -71,6 +76,7 @@ const addDepartment = () => {
         name: "title",
       },
     ])
+    // Deconstruct
     .then(({ id, title }) => {
       const sql = `INSERT INTO departments (id, name) VALUES (?, ?)`;
       const values = [id, title];

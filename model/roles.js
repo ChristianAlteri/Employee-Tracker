@@ -163,6 +163,7 @@ const addDepartment = () => {
           return db.promise().query(selectSql);
         })
         .then(([results]) => {
+          // This clg just clears the terminal.
           console.log("\033[2J");
           console.log("\n New department added into the database \n");
           console.table(results);
