@@ -6,9 +6,9 @@ Effortlessly handle your employee database using the convenience of your command
 
 ## Mock-Up
 
-The following video shows an example of the application being used from the command line:
+The following video shows an example of the application being used from the command line: {click picture}
 
-[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./Assets/12-sql-homework-video-thumbnail.png)](https://2u-20.wistia.com/medias/2lnle7xnpk)
+[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./assets/command_line.png)](https://drive.google.com/file/d/17D5Hv94PKchn_hMh3Mv4-4ffKdzAq_Tk/view)
 
 ## Table of contents:
 
@@ -23,7 +23,7 @@ The following video shows an example of the application being used from the comm
 ## Installation:
 
 ```bash
-npm install console.table@^0.10.0 inquirer@^8.2.4 mysql@^2.18.1 mysql2@^3.3.3
+npm install console.table@^0.10.0 inquirer@^8.2.4 mysql2@^3.3.3
 npm run run
 ```
 
